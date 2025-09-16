@@ -1,21 +1,30 @@
 using DifferentialEquations
 using Plots
 
+function step_function(t, t0)
+    if t < t0
+        return 0
+    else
+        return 1
+    end
+end
+
 # Parameters
-m = 100.0       # mass
-c = 195       # damping
-k = 500.0       # stiffness
+m = 1000/3.16^2       # mass
+k = 1000
+c = 0.1*2*sqrt(k*m)       # damping
+t0 = 2
 
 # State vector u = [x, v], where v = dx/dt
 function oscillator!(du, u, p, t)
     x, v = u
     du[1] = v
-    du[2] = -(c/m)*v - (k/m)*x + 150 * cos(5*t) / m
+    du[2] = -(c/m)*v - (k/m)*x + 30 * step_function(t,t0)
 end
 
 # Initial conditions
-u0 = [0.01, 0.5]       # x(0)=1, v(0)=0
-tspan = (0.0, 20.0)   # simulate for 20 seconds
+u0 = [0, 0]       # x(0)=1, v(0)=0
+tspan = (0.0, 12.0)   # simulate for 20 seconds
 
 # Define ODE problem
 prob = ODEProblem(oscillator!, u0, tspan)
